@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprender Jugando</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f8ff; min-height: 100vh; padding: 20px; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .categorias { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .btn-cat { padding: 12px 25px; font-size: 18px; border: none; border-radius: 25px; cursor: pointer; background: #3498db; color: white; transition: 0.3s; }
+        .btn-cat.activo { background: #2980b9; transform: scale(1.05); }
+        .contenedor { max-width: 1200px; margin: 0 auto; }
+        .cuadricula { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
+        .tarjeta { background: white; border-radius: 15px; padding: 25px 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; }
+        .tarjeta:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .simbolo { font-size: 48px; font-weight: bold; color: #e74c3c; margin-bottom: 10px; }
+        .nombre { font-size: 18px; color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>🎓 Aprender Jugando</h1>
+
+    <div class="categorias">
+        <button class="btn-cat activo" onclick="mostrar('letras')">🔤 Letras</button>
+        <button class="btn-cat" onclick="mostrar('numeros')">🔢 Números</button>
+        <button class="btn-cat" onclick="mostrar('palabras')">📝 Palabras</button>
+    </div>
+
+    <div class="contenedor">
+        <div id="letras" class="cuadricula"></div>
+        <div id="numeros" class="cuadricula" style="display: none;"></div>
+        <div id="palabras" class="cuadricula" style="display: none;"></div>
+    </div>
+
+    <script>
+        const datos = {
+            letras: [
+                {simbolo: 'A', nombre: 'a'},
+                {simbolo: 'B', nombre: 'be'},
+                {simbolo: 'C', nombre: 'ce'},
+                {simbolo: 'D', nombre: 'de'},
+                {simbolo: 'E', nombre: 'e'},
+                {simbolo: 'F', nombre: 'efe'},
+                {simbolo: 'G', nombre: 'ge'},
+                {simbolo: 'H', nombre: 'hache'},
+                {simbolo: 'I', nombre: 'i'},
+                {simbolo: 'J', nombre: 'jota'},
+                {simbolo: 'K', nombre: 'ka'},
+                {simbolo: 'L', nombre: 'ele'},
+                {simbolo: 'M', nombre: 'eme'},
+                {simbolo: 'N', nombre: 'ene'},
+                {simbolo: 'Ñ', nombre: 'eñe'},
+                {simbolo: 'O', nombre: 'o'},
+                {simbolo: 'P', nombre: 'pe'},
+                {simbolo: 'Q', nombre: 'cu'},
+                {simbolo: 'R', nombre: 'ere'},
+                {simbolo: 'S', nombre: 'ese'},
+                {simbolo: 'T', nombre: 'te'},
+                {simbolo: 'U', nombre: 'u'},
+                {simbolo: 'V', nombre: 'uve'},
+                {simbolo: 'W', nombre: 'uve doble'},
+                {simbolo: 'X', nombre: 'equis'},
+                {simbolo: 'Y', nombre: 'ye'},
+                {simbolo: 'Z', nombre: 'zeta'}
+            ],
+            numeros: [
+                {simbolo: '1', nombre: 'uno'},
+                {simbolo: '2', nombre: 'dos'},
+                {simbolo: '3', nombre: 'tres'},
+                {simbolo: '4', nombre: 'cuatro'},
+                {simbolo: '5', nombre: 'cinco'},
+                {simbolo: '6', nombre: 'seis'},
+                {simbolo: '7', nombre: 'siete'},
+                {simbolo: '8', nombre: 'ocho'},
+                {simbolo: '9', nombre: 'nueve'},
+                {simbolo: '10', nombre: 'diez'}
+            ],
+            palabras: [
+                {simbolo: '🐶', nombre: 'perro'},
+                {simbolo: '🐱', nombre: 'gato'},
+                {simbolo: '🐭', nombre: 'ratón'},
+                {simbolo: '🐦', nombre: 'pájaro'},
+                {simbolo: '🌳', nombre: 'árbol'},
+                {simbolo: '🌸', nombre: 'flor'},
+                {simbolo: '☀️', nombre: 'sol'},
+                {simbolo: '🌙', nombre: 'luna'},
+                {simbolo: '🍎', nombre: 'manzana'},
+                {simbolo: '🏠', nombre: 'casa'}
+            ]
+        };
+
+        function mostrar(categoria) {
+            document.querySelectorAll('.btn-cat').forEach(b => b.classList.remove('activo'));
+            event.target.classList.add('activo');
+            
+            document.querySelectorAll('.cuadricula').forEach(c => c.style.display = 'none');
+            document.getElementById(categoria).style.display = 'grid';
+        }
+
+        function crearTarjetas() {
+            for (let cat in datos) {
+                const contenedor = document.getElementById(cat);
+                datos[cat].forEach(item => {
+                    const tarjeta = document.createElement('div');
+                    tarjeta.className = 'tarjeta';
+                    tarjeta.innerHTML = `
+                        <div class="simbolo">${item.simbolo}</div>
+                        <div class="nombre">${item.nombre}</div>
+                    `;
+                    tarjeta.onclick = () => hablar(item.nombre);
+                    contenedor.appendChild(tarjeta);
+                });
+            }
+        }
+
+        function hablar(texto) {
+            if ('speechSynthesis' in window) {
+                const mensaje = new SpeechSynthesisUtterance(texto);
+                mensaje.lang = 'es-AR';
+                mensaje.rate = 0.8;
+                speechSynthesis.speak(mensaje);
+            }
+        }
+
+        crearTarjetas();
+    </script>
+</body>
+</html>
